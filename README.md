@@ -24,7 +24,8 @@ MIT
 __________________________________________________________
 
 ## Demo
-[![demo vid](week9hw/TeamProfileGenerator/src/teamProfile.png)](https://youtu.be/Dz0RasG51Yo)
+[![demo vid](src/teamProfile.png)](https://youtu.be/Dz0RasG51Yo)
+
 ## Help and reports
 Please report issues to fortega328@github.com
 
