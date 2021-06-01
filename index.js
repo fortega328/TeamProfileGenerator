@@ -1,187 +1,198 @@
-const Employee = require("./library/Employee");
+const inquirer = require('inquirer');
 const Engineer = require("./library/Engineer");
-const Intern = require("./library/Intern");
 const Manager = require("./library/Manager");
-const team = [];
+const Intern = require("./library/Intern");
+const fs = require('fs');
+const path = require("path");
+const generateTeam = require('./src/page-template.js');
 
-const inquirer = require("inquirer");
-inquirer.prompt({
-    type: 'list',
-    name: 'direction',
-    choices: ['add manager', 'add intern', 'add engineer', 'create team'],
-    message: "please select your team member..."
-}).then(answer =>{
-    if(answer.direction=== 'add manager'){
-        askManager();
-    }else if(answer.direction === 'add intern'){
-        askIntern();
-    }else if(answer.direction === 'add engineer'){
-        askEngineer();
-    }else{
-        console.log("Good Bye");
-        process.exit()
+const OUTPUT_DIR = path.resolve(__dirname, "output")
+const outputPath = path.join(OUTPUT_DIR, "team.html");
+
+const Employees = [];
+
+// Question Paths 
+function managerQuestions(){
+
+    inquirer.prompt([
+
+    {
+        type: "input",
+        message: "Manager name?",
+        name: "name",
+        validate: (value)=> { if (value){return true} else {return "Input your name, please."}},
+    },
+    {
+        type: "input",
+        message: "Employee ID?",
+        name: "id",
+        validate: (value)=> { if (value){return true} else {return "Input your ID, please."}},
+    },
+    {
+        type: "input",
+        message: "What is your email?",
+        name: "email",
+        validate: (value)=> { if (value){return true} else {return "Input your email, please."}},
+    },
+    {
+        type: "input",
+        message: "Office Number?",
+        name: "officeNum",
+        validate: (value)=> { if (value){return true} else {return "Input the Office Number, please."}},
+    }, 
+    {
+        type: "list",
+        message: `Select an action.`,
+        choices: [
+            "Add Engineer",
+            "Add Intern",
+            "Finish Building Team",
+        ],
+        name: "action",
+        validate: (value)=> { if (value){return true} else {return "Choose an action, please."}},
+    },
+    ]).then(function(answers){
+        const newManager = new Manager(answers.name, answers.id, answers.email, answers.officeNum)
+        Employees.push(newManager);
+        console.log("Added new Manager");
+        
+
+        if (answers.action === 'Add Engineer'){
+            engineerQuestions();
+        } 
+        if (answers.action === 'Add Intern'){
+            internQuestions();
+        }
+        if (answers.action === "Finish Building Team"){
+            generateHTML();
+            
+        }
+})};
+
+function engineerQuestions(){
+
+    inquirer.prompt([
+ 
+    {
+        type: "input",
+        message: "Engineer name?",
+        name: "name",
+        validate: (value)=> { if (value){return true} else {return "Input your name, please."}},
+    },
+    {
+        type: "input",
+        message: "Employee ID?",
+        name: "id",
+        validate: (value)=> { if (value){return true} else {return "Input your Employee ID, please."}},
+    },
+    {
+        type: "input",
+        message: "Email?",
+        name: "email",
+        validate: (value)=> { if (value){return true} else {return "Input your email, please."}},
+    },
+    {
+        type: "input",
+        message: "GitHub Usernmame?",
+        name: "github",
+        validate: (value)=> { if (value){return true} else {return "Input your GitHub Username, please."}},
+    },
+    {
+        type: "list",
+        message: `Select an action.`,
+        choices: [
+            "Add Engineer",
+            "Add Intern",
+            "Finish Building Team",
+        ],
+        name: "action",
+        validate: (value)=> { if (value){return true} else {return "Choose an action, please."}},
+    },
+    
+]).then(function(answers){
+    const newEngineer = new Engineer(answers.name, answers.id, answers.email, answers.github)
+    Employees.push(newEngineer);
+        console.log("Added new Engineer");
+    if (answers.action === 'Add Engineer'){
+        engineerQuestions();
+    } 
+    if (answers.action === 'Add Intern'){
+        internQuestions();
     }
-})
+    if (answers.action === "Finish Building Team"){
+        generateHTML();
+        
+    }
+})};
 
-const managerQuestions = [
-  {
-    type: "input",
-    name: "managerName",
-    message: "What is your managers name?",
-    validate: (answer) => {
-      if (answer !== "") {
-        return true;
-      }
-      return "Please enter valid answer";
-    },
-  },
-  {
-    type: "input",
-    name: "managerId",
-    message: "What is your managers ID number?",
-    validate: (answer) => {
-      if (answer !== "") {
-        return true;
-      }
-      return "Please enter valid answer";
-    },
-  },
-  {
-    type: "input",
-    name: "managerEmail",
-    message: "What is your managers email address?",
-    validate: (answer) => {
-      if (answer !== "") {
-        return true;
-      }
-      return "Please enter valid answer";
-    },
-  },
-  {
-    type: "input",
-    name: "managerOfficeNumber",
-    message: "What is your managers office number?",
-    validate: (answer) => {
-      if (answer !== "") {
-        return true;
-      }
-      return "Please enter valid answer";
-    },
-  },
-];
-const internQuestions = [
+function internQuestions(){
+    
+    inquirer.prompt([
     {
-      type: "input",
-      name: "internName",
-      message: "What is your interns name?",
-      validate: (answer) => {
-        if (answer !== "") {
-          return true;
-        }
-        return "Please enter valid answer";
-      },
+        type: "input",
+        message: "Intern Name?",
+        name: "name",
+        validate: (value)=> { if (value){return true} else {return "Input your name, please."}},
     },
     {
-      type: "input",
-      name: "internId",
-      message: "What is your interns ID number?",
-      validate: (answer) => {
-        if (answer !== "") {
-          return true;
-        }
-        return "Please enter valid answer";
-      },
+        type: "input",
+        message: "Employee ID?",
+        name: "id",
+        validate: (value)=> { if (value){return true} else {return "Input your Employee ID, please."}},
     },
     {
-      type: "input",
-      name: "internEmail",
-      message: "What is your interns email address?",
-      validate: (answer) => {
-        if (answer !== "") {
-          return true;
-        }
-        return "Please enter valid answer";
-      },
+        type: "input",
+        message: "Email?",
+        name: "email",
+        validate: (value)=> { if (value){return true} else {return "Input your email, please."}},
     },
     {
-      type: "input",
-      name: "internSchool",
-      message: "What is your interns School?",
-      validate: (answer) => {
-        if (answer !== "") {
-          return true;
-        }
-        return "Please enter valid answer";
-      },
-    },
-  ];
-const engineerQuestions = [
-    {
-      type: "input",
-      name: "engineerName",
-      message: "What is your engineers name?",
-      validate: (answer) => {
-        if (answer !== "") {
-          return true;
-        }
-        return "Please enter valid answer";
-      },
+        type: "input",
+        message: "School this Intern is currently enrolled in?",
+        name: "school",
+        validate: (value)=> { if (value){return true} else {return "Input the school name, please."}},
     },
     {
-      type: "input",
-      name: "engineerId",
-      message: "What is your engineers ID number?",
-      validate: (answer) => {
-        if (answer !== "") {
-          return true;
-        }
-        return "Please enter valid answer";
-      },
+        type: "list",
+        message: `Select an action.`,
+        choices: [
+            "Add Engineer",
+            "Add Intern",
+            "Finish Building Team",
+        ],
+        name: "action",
+        validate: (value)=> { if (value){return true} else {return "Choose an action, please."}},
     },
-    {
-      type: "input",
-      name: "engineerEmail",
-      message: "What is your engineers email address?",
-      validate: (answer) => {
-        if (answer !== "") {
-          return true;
-        }
-        return "Please enter valid answer";
-      },
-    },
-    {
-      type: "input",
-      name: "engineerGithub",
-      message: "What is your engineers Github?",
-      validate: (answer) => {
-        if (answer !== "") {
-          return true;
-        }
-        return "Please enter valid answer";
-      },
-    },
-  ];
+    
+]).then(function(answers){
+    const newIntern = new Intern(answers.name, answers.id, answers.email, answers.school)
+    Employees.push(newIntern);
+    console.log("Added new Intern");
+    if (answers.action === 'Add Engineer'){
+        engineerQuestions();
+    } 
+    if (answers.action === 'Add Intern'){
+        internQuestions();
+    }
+    if (answers.action === "Finish Building Team"){
+        generateHTML();
+        
+    }
+})};
 
-const askManager = ()=>{
-    inquirer.prompt(managerQuestions)
-    .then(answer =>{
-        const manager = new Manager(answer.managerName, answer.managerId, answer.managerEmail, answer.managerOfficeNumber);
-        team.push(manager);
-    })
+
+function buildTeam() {
+    if (!fs.existsSync(OUTPUT_DIR)) {
+        fs.mkdirSync(OUTPUT_DIR)
+      }
+    fs.writeFileSync(outputPath, generateTeam(Employees), "utf-8");
+  }
+
+  function generateHTML(){
+    buildTeam();
+    console.log("Team Built");
+
 }
-const askIntern = ()=>{
-    inquirer.prompt(internQuestions)
-    .then(answer =>{
-        const intern = new Intern(answer.internName, answer.internId, answer.internEmail, answer.internSchool);
-        team.push(intern)
-        console.log('/n')
-    })
-}
-const askEngineer = ()=>{
-    inquirer.prompt(engineerQuestions)
-    .then(answer =>{
-        const engineer = new Engineer(answer.engineerName, answer.engineerId, answer.engineerEmail, answer.engineerGithub);
-        team.push(engineer);
-        console.log(team)
-    })
-}
+
+// function call to initialize program
+managerQuestions();
