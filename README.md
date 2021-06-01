@@ -23,8 +23,9 @@ MIT
 * <img src='https://img.shields.io/badge/js-yellow' alt="js-badge">
 __________________________________________________________
 
-## Demo
+## Demo click to open youtube.
 [![demo vid](src/teamProfile.png)](https://youtu.be/Dz0RasG51Yo)
+https://youtu.be/Dz0RasG51Yo
 
 ## Help and reports
 Please report issues to fortega328@github.com
